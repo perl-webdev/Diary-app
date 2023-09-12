@@ -1,25 +1,24 @@
-import logo from './logo.svg';
-import './App.css';
+import React from "react";
+import AppHeader from "../app-header";
+import SearchPanel from "../search-panel";
+import PostStatusFilter from "../post-status-filter";
+import PostList from "../post-list";
+import PostAddForm from "../post-add-form";
 
-function App() {
+
+
+const App = () => {
 	return (
-		<div className="App">
-			<header className="App-header">
-				<img src={logo} className="App-logo" alt="logo" />
-				<p>
-					Edit <code>src/App.js</code> and save to reload.
-				</p>
-				<a
-					className="App-link"
-					href="https://reactjs.org"
-					target="_blank"
-					rel="noopener noreferrer"
-				>
-					Learn React
-				</a>
-			</header>
+		<div>
+			<AppHeader/>
+			<div className='search-panel d-flex'>
+				<SearchPanel/>
+				<PostStatusFilter/>
+			</div>
+			<PostList/>
+			<PostAddForm/>
 		</div>
-	);
+	)
 }
 
 export default App;
