@@ -16,12 +16,16 @@ export default class App extends Component {
 				{ label: 'Going to learn React', important: false, like:false, id: 1 },
 				{ label: 'Going to chill out...', important: false, like:false, id: 2 },
 				{ label: 'Meet a friend.', important: false, like:false, id: 3 },
-			]
+			],
+			term: '',
+			filter: 'all'
 		};
 		this.deleteitem = this.deleteitem.bind(this);
 		this.addItem = this.addItem.bind(this);
 		this.maxId = 4;
 		this.onToggleProperty = this.onToggleProperty.bind(this);
+		this.onUpdateSearch = this.onUpdateSearch.bind(this);
+		this.onFilterSelect = this.onFilterSelect.bind(this);
 	}
 
 	deleteitem(id) {
@@ -62,19 +66,51 @@ export default class App extends Component {
 		})
 	}
 
+	searchPost(items, term) {
+		if (term.length === 0) {
+			return items
+		}
+
+		return items.filter((item) => {
+			return item.label.indexOf(term) > -1
+		})
+	}
+
+	onUpdateSearch(term) {
+		this.setState({term})
+	}
+
+	filterPost(items, filter) {
+		if (filter === 'like') {
+			return items.filter(item => item.like)
+		} else {
+			return items
+		}
+	}
+
+	onFilterSelect(filter) {
+		this.setState({filter})
+	}
+
 	render() {
-		const {data} = this.state;
+		const {data, term, filter} = this.state;
 		const liked = data.filter(item => item.like).length;
 		const allPosts = data.length;
+		const visiblePosts = this.filterPost(this.searchPost(data, term), filter);
 
 		return (
 			<div>
 				<AppHeader liked={liked} allPosts={allPosts}/>
 				<div className="search-panel d-flex">
-					<SearchPanel />
-					<PostStatusFilter />
+					<SearchPanel 
+						onUpdateSearch={this.onUpdateSearch}/>
+					<PostStatusFilter 
+						filter={filter}
+						onFilterSelect={this.onFilterSelect}/>
 				</div>
-				<PostList posts={this.state.data} onDelete={this.deleteitem} onToggleImportant={(id) => this.onToggleProperty(id, 'important')}
+				<PostList posts={visiblePosts} 
+				onDelete={this.deleteitem} 
+				onToggleImportant={(id) => this.onToggleProperty(id, 'important')}
 				onToggleLiked={(id) => this.onToggleProperty(id, 'like')}/>
 				<PostAddForm onAdd={this.addItem}/>
 			</div>
