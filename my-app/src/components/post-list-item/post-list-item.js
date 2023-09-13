@@ -4,31 +4,9 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {faHeart, faStar, faTrash } from '@fortawesome/free-solid-svg-icons';
 
 export default class PostListItem extends Component {
-	constructor(props) {
-		super(props);
-		this.state = {
-			important: false,
-			like: false
-		};
-		this.onImportant = this.onImportant.bind(this);
-		this.onLike = this.onLike.bind(this);
-	}
-
-	onImportant() {
-		this.setState(({important}) => ({
-			important: !important
-		}))
-	}
-
-	onLike() {
-		this.setState(({like}) => ({
-			like: !like
-		}))
-	}
 
 	render() {
-		const {label, onDelete} = this.props;
-		const {important, like} = this.state;
+		const {label, onDelete, onToggleImportant, onToggleLiked, important, like} = this.props;
 		let classNames = 'app-list-item d-flex justify-content-between';
 
 		if (important) {
@@ -40,11 +18,11 @@ export default class PostListItem extends Component {
 		
 		return(
 			<div className = { classNames } >
-			<span className="app-list-item-label" onClick={this.onLike}>
+			<span className="app-list-item-label" onClick={onToggleLiked}>
 				{label}
 			</span>
 			<div className="d-flex justify-content-center align-items-center">
-				<button className="btn-star btn-sm" type="button" onClick={this.onImportant}>
+				<button className="btn-star btn-sm" type="button" onClick={onToggleImportant}>
 					<FontAwesomeIcon icon={faStar} />
 				</button>
 				<button className="btn-trash btn-sm" type="button" onClick={onDelete}>

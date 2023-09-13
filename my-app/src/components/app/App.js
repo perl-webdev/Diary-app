@@ -13,14 +13,15 @@ export default class App extends Component {
 		super(props);
 		this.state = {
 			data: [
-				{ label: 'Going to learn React', important: false, id: 1 },
-				{ label: 'Going to chill out...', important: false, id: 2 },
-				{ label: 'Meet a friend.', important: false, id: 3 },
+				{ label: 'Going to learn React', important: false, like:false, id: 1 },
+				{ label: 'Going to chill out...', important: false, like:false, id: 2 },
+				{ label: 'Meet a friend.', important: false, like:false, id: 3 },
 			]
 		};
 		this.deleteitem = this.deleteitem.bind(this);
 		this.addItem = this.addItem.bind(this);
 		this.maxId = 4;
+		this.onToggleProperty = this.onToggleProperty.bind(this);
 	}
 
 	deleteitem(id) {
@@ -48,15 +49,33 @@ export default class App extends Component {
 		})
 	}
 
+	onToggleProperty(id, propName) {
+		this.setState(({data}) => {
+			const index = data.findIndex(elem => elem.id === id);
+			const old = data[index];
+			const newItem = {...old, [propName]: !old[propName]};
+			const newArr = [...data.slice(0, index), newItem, ...data.slice(index + 1)];
+
+			return {
+				data: newArr
+			}
+		})
+	}
+
 	render() {
+		const {data} = this.state;
+		const liked = data.filter(item => item.like).length;
+		const allPosts = data.length;
+
 		return (
 			<div>
-				<AppHeader />
+				<AppHeader liked={liked} allPosts={allPosts}/>
 				<div className="search-panel d-flex">
 					<SearchPanel />
 					<PostStatusFilter />
 				</div>
-				<PostList posts={this.state.data} onDelete={this.deleteitem} />
+				<PostList posts={this.state.data} onDelete={this.deleteitem} onToggleImportant={(id) => this.onToggleProperty(id, 'important')}
+				onToggleLiked={(id) => this.onToggleProperty(id, 'like')}/>
 				<PostAddForm onAdd={this.addItem}/>
 			</div>
 		)
